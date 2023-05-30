@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+seq 1 $1 | xargs -I {} mkdir data/test{}
+seq 1 $1 | xargs -I {} mkdir data/ans{}
