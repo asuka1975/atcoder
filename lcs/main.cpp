@@ -26,7 +26,7 @@ int main() {
     std::string s, t;
     std::cin >> s >> t;
 
-    std::vector<std::vector<fixed_string>> dp(2, std::vector<fixed_string>(t.size() + 1));
+    std::vector<std::vector<std::string>> dp(2, std::vector<std::string>(t.size() + 1));
 
     for(std::uint64_t k = 0; k < s.length(); k++) {
         auto i = k % 2;
@@ -35,8 +35,7 @@ int main() {
             auto c2 = t[j];
             if(c1 == c2) {
                 if(dp[i][j].length() + 1 > dp[1 - i][j + 1].length()) {
-                    dp[1 - i][j + 1] = dp[i][j];
-                    dp[1 - i][j + 1] += c1;
+                    dp[1 - i][j + 1] = dp[i][j] + c1;
                 }
             }
             else {
@@ -54,5 +53,5 @@ int main() {
     }
 
 
-    std::cout << dp[s.length() % 2][t.length()].content << std::endl;
+    std::cout << dp[s.length() % 2][t.length()] << std::endl;
 }
