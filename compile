@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+g++ -o ./bin/sample -std=c++17 -Wall -Wextra main.cpp
