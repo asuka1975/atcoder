@@ -1,6 +1,28 @@
-#!/usr/bin/env bash
+#!/home/hungr/work/atcoder/.venv/bin/python
 
-mkdir data bin
+import os
+import sys
+import requests
+from bs4 import BeautifulSoup
 
-seq 1 $1 | xargs -I {} touch data/test{}
-seq 1 $1 | xargs -I {} touch data/ans{}
+
+os.mkdir("data")
+os.mkdir("bin")
+
+url = sys.argv[1]
+
+r = requests.get(url)
+bs = BeautifulSoup(r.text, 'html.parser')
+
+s = [elem.getText() for elem in bs.select("pre")]
+s = s[:len(s)//2][1:]
+
+for i, p in enumerate(s):
+    if i % 2 == 0:
+        with open(f"data/test{i + 1}", "w") as f:
+            f.write(p)
+
+    if i % 2 == 1:
+        with open(f"data/ans{i + 1}", "w") as f:
+            f.write(p)
+
