@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include <vector>
 #include <algorithm>
 
@@ -29,5 +30,5 @@ int main() {
         p += dp[n - 1][i];
     }
 
-    std::cout << p << std::endl;
+    std::cout << std::setprecision(10) << p << std::endl;
 }
