@@ -1,53 +1,101 @@
 #include <algorithm>
+#include <cstdint>
 #include <iostream>
 #include <map>
+#include <unordered_map>
 #include <vector>
 #include <list>
+#include <set>
 
 using edge = std::pair<int, int>;
 using path = std::list<edge>;
+
+void DFS(const std::unordered_map<int, std::set<int>>& graph, int from, std::vector<bool>& visited, std::vector<int>& result)
+{
+	visited[from] = true;
+
+	for (const auto& to : graph.at(from))
+	{
+		if (!visited[to])
+		{
+			DFS(graph, to, visited, result);
+		}
+	}
+
+	// 帰りがけ順
+	result.push_back(from);
+}
+
+/// @brief トポロジカルソート
+/// @param graph グラフ
+/// @remark グラフは有向非巡回グラフ (DAG) でなければならない
+/// @return トポロジカルソートの結果
+/// @note 1.1 深さ優先探索を用いたトポロジカルソート
+/// @see https://zenn.dev/reputeless/books/standard-cpp-for-competitive-programming/viewer/topological-sort
+std::vector<int> TopologicalSort(const std::unordered_map<int, std::set<int>>& graph)
+{
+	std::vector<int> result;
+
+	std::vector<bool> visited(graph.size());
+
+	for (int i = 1; i <= static_cast<int>(graph.size()); ++i)
+	{
+		if (!visited[i])
+		{
+			DFS(graph, i, visited, result);
+		}
+	}
+
+	std::reverse(result.begin(), result.end());
+
+	return result;
+}
 
 int main() {
     int n, m;
     std::cin >> n >> m;
 
 
-    std::vector<edge> graph(m);
-    for(auto& [s, t] : graph) {
-        std::cin >> s >> t;
-    }
 
-    std::map<edge, std::vector<path>> dp;
 
-    for(auto e : graph) {
-        dp[e].resize(2);
-        dp[e][0].push_back(e);
+    std::unordered_map<int, std::set<int>> graph;
+    for(int i = 1; i <= n; i++) {
+        graph[i];
     }
-    
 
     for(int i = 0; i < m; i++) {
-        auto e1 = graph[i];
-        for(int k = 0; k < m; k++) {
-            auto j = k % 2;
-            auto e2 = graph[k];
-            if(e1.second == e2.first) {
-                auto& p2 = dp[e2][1 - j];
-                auto p1 = dp[e1][j];
-                p1.push_back(e2);
-                if(p1.size() > p2.size()) {
-                    p2 = p1;
-                }
-            }
+        int in, out;
+        std::cin >> in >> out;
+        graph[in].insert(out);
+    }
 
-            auto& p2 = dp[e1][1 - j];
-            auto& p1 = dp[e1][j];
-            if(p1.size() > p2.size()) {
-                p2 = p1;
+    auto L = TopologicalSort(graph);
+    
+    std::map<int, int> dp;
+
+    for(int i = 1; i <= n; i++) {
+        dp[i] = 0;
+    }
+
+
+    for(auto m : L) {
+        const auto& e = graph[m];
+        for(auto j : e) {
+            if(dp[j] < dp[m] + 1) {
+                dp[j] = dp[m] + 1;
             }
         }
     }
 
-    std::cout << std::max_element(dp.begin(), dp.end(), [m](auto a, auto b) {
-        return a.second[1 - m % 2].size() < b.second[1 - m % 2].size();
-    })->second[1 - m % 2].size() << std::endl;
+    // for(auto& [n, v] : dp) {
+    //     std::cout << n << ": ";
+    //     for(auto x : v) {
+    //         std::cout << x << " ";
+    //     }
+    //     std::cout << std::endl;
+    // }
+
+    std::cout << std::max_element(dp.begin(), dp.end(), [&L](auto a, auto b) {
+        return a.second < b.second;
+    })->second << std::endl;
 }

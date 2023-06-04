@@ -1,0 +1,20 @@
+#!/usr/bin/env python
+
+import sys
+
+import networkx as nx
+import matplotlib.pyplot as plt
+
+styles = {'node_size':1400,
+          'font_size':15,
+          'node_color':'lightblue',
+          'with_labels':True,
+          'font_weight':'bold'}
+
+with open(f"data/test{sys.argv[1]}", "r") as f:
+    n, m = map(int, f.readline().split(" "))
+    G = nx.DiGraph()
+    G.add_nodes_from([i for i in range(1, n + 1)])
+    G.add_edges_from([tuple(map(int, l.split(" "))) for l in f])
+    nx.draw_circular(G, **styles)
+    plt.show()
