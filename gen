@@ -19,10 +19,10 @@ s = s[:len(s)//2][1:]
 
 for i, p in enumerate(s):
     if i % 2 == 0:
-        with open(f"data/test{i + 1}", "w") as f:
+        with open(f"data/test{i // 2 + 1}", "w") as f:
             f.write(p)
 
     if i % 2 == 1:
-        with open(f"data/ans{i + 1}", "w") as f:
+        with open(f"data/ans{i // 2 + 1}", "w") as f:
             f.write(p)
 
